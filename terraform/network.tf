@@ -21,7 +21,7 @@ resource "aws_security_group" "minecraft_server" {
   ingress {
       from_port = 25565
       to_port = 25565
-      protocol = -1
+      protocol = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -29,7 +29,7 @@ resource "aws_security_group" "minecraft_server" {
   ingress {
       from_port = 25575
       to_port = 25575
-      protocol = -1
+      protocol = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
   }
 
