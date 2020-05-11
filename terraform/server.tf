@@ -23,8 +23,20 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+resource "aws_ebs_volume" "minecraft_server_data" {
+  availability_zone = var.availability_zone
+  size              = 8 # GiB
+  type = "standard"
+
+  tags = {
+    Name = "minecraft-server"
+  }
+}
+
+
 resource "aws_instance" "minecraft_server" {
   ami                    = data.aws_ami.ubuntu.id
+  availability_zone      = var.availability_zone
   instance_type          = "t3.nano"
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.minecraft_server.id]
@@ -32,9 +44,8 @@ resource "aws_instance" "minecraft_server" {
   connection {
     type        = "ssh"
     host        = self.public_ip
-    user        = "ec2-user"
+    user        = "ubuntu"
     private_key = file(var.private_key_path)
-
   }
 
   provisioner "remote-exec" {
@@ -44,4 +55,16 @@ resource "aws_instance" "minecraft_server" {
       "sudo apt install ansible -y"
     ]
   }
+
+  root_block_device {
+      delete_on_termination = true
+      volume_size = 8 # GiB
+      volume_type = "standard"
+  }
+}
+
+resource "aws_volume_attachment" "minecraft_server_data" {
+  device_name = "/dev/sdh"
+  volume_id   = aws_ebs_volume.minecraft_server_data.id
+  instance_id = aws_instance.minecraft_server.id
 }
