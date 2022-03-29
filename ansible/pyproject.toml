@@ -6,7 +6,7 @@ authors = ["Robert Smieja <robertsmieja@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-ansible = "^2.9.7"
+ansible = "^4.2.0"
 
 [tool.poetry.dev-dependencies]
 ansible-lint = "^4.2.0"
